@@ -13,34 +13,42 @@ class Game {
     }
 
     method void run() {
+        var boolean leftHit;
+        var boolean rightHit;
+        var int by;
+
         while (true) {
             do Screen.clearScreen();
-            do leftPaddle.update(130, 131);   // teclas arriba/abajo izquierda
-            do rightPaddle.update(138, 139);  // teclas arriba/abajo derecha
+            do leftPaddle.update(130, 131);
+            do rightPaddle.update(138, 139);
             do ball.move();
-            do checkCollision();
+
+            // --- check collision ---
+            let by = ball.yPos();
+            if (by = 0) {
+                do ball.bounceVertical();
+            }
+            if (by = 230) {
+                do ball.bounceVertical();
+            }
+
+            let leftHit = leftPaddle.collidesWith(ball);
+            if (leftHit) {
+                do ball.bounceHorizontal();
+            }
+
+            let rightHit = rightPaddle.collidesWith(ball);
+            if (rightHit) {
+                do ball.bounceHorizontal();
+            }
+
+            // --- draw ---
             do leftPaddle.draw();
             do rightPaddle.draw();
             do ball.draw();
+
             do Sys.wait(20);
         }
-        return;
-    }
-
-    method void checkCollision() {
-        // rebote con bordes
-        if (ball.yPos() <= 0 | ball.yPos() >= 230) {
-            do ball.bounceVertical();
-        }
-
-        // colisión con paletas
-        if (leftPaddle.collidesWith(ball)) {
-            do ball.bounceHorizontal();
-        }
-        if (rightPaddle.collidesWith(ball)) {
-            do ball.bounceHorizontal();
-        }
-
         return;
     }
 }

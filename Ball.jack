@@ -1,14 +1,12 @@
 class Ball {
-    field int x, y;      // posición
-    field int dx, dy;    // dirección
-    field int size;
+    field int x, y;
+    field int dx, dy;
 
     constructor Ball new(int startX, int startY) {
         let x = startX;
         let y = startY;
-        let dx = 3;
+        let dx = 2;
         let dy = 2;
-        let size = 4;
         return this;
     }
 
@@ -28,12 +26,17 @@ class Ball {
         return;
     }
 
-    method void draw() {
-        do Screen.setColor(true);
-        do Screen.fillRectangle(x, y, x + size, y + size);
-        return;
+    method int xPos() {
+        return x;
     }
 
-    method int xPos() { return x; }
-    method int yPos() { return y; }
+    method int yPos() {
+        return y;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.fillRectangle(x, y, x + 4, y + 4);
+        return;
+    }
 }

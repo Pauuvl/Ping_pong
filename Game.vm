@@ -1,0 +1,108 @@
+function Game.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push constant 250
+push constant 200
+call Ball.new 2
+pop this 0
+push constant 20
+push constant 150
+call Paddle.new 2
+pop this 1
+push constant 450
+push constant 150
+call Paddle.new 2
+pop this 2
+push constant 0
+pop this 3
+push constant 0
+pop this 4
+push pointer 0
+return
+function Game.run 3
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push constant 0
+not
+not
+if-goto WHILE_END0
+call Screen.clearScreen 0
+pop temp 0
+push this 1
+push constant 130
+push constant 131
+call Paddle.update 3
+pop temp 0
+push this 2
+push constant 138
+push constant 139
+call Paddle.update 3
+pop temp 0
+push this 0
+call Ball.move 1
+pop temp 0
+push this 0
+call Ball.yPos 1
+pop local 2
+push local 2
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 0
+call Ball.bounceVertical 1
+pop temp 0
+label IF_FALSE0
+push local 2
+push constant 230
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 0
+call Ball.bounceVertical 1
+pop temp 0
+label IF_FALSE1
+push this 1
+push this 0
+call Paddle.collidesWith 2
+pop local 0
+push local 0
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 0
+call Ball.bounceHorizontal 1
+pop temp 0
+label IF_FALSE2
+push this 2
+push this 0
+call Paddle.collidesWith 2
+pop local 1
+push local 1
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 0
+call Ball.bounceHorizontal 1
+pop temp 0
+label IF_FALSE3
+push this 1
+call Paddle.draw 1
+pop temp 0
+push this 2
+call Paddle.draw 1
+pop temp 0
+push this 0
+call Ball.draw 1
+pop temp 0
+push constant 20
+call Sys.wait 1
+pop temp 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return

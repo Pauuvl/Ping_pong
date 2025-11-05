@@ -1,6 +1,6 @@
 class Paddle {
     field int x, y;
-    field int height, width;
+    field int width, height;
     field int speed;
 
     constructor Paddle new(int startX, int startY) {
@@ -43,12 +43,27 @@ class Paddle {
     }
 
     method boolean collidesWith(Ball b) {
-        var int bx, by;
+        var int bx;
+        var int by;
+        var boolean hit;
+
         let bx = b.xPos();
         let by = b.yPos();
-        if ((bx >= x & bx <= x + width) & (by >= y & by <= y + height)) {
-            return true;
+        let hit = true;
+
+        if (bx < x) {
+            let hit = false;
         }
-        return false;
+        if (bx > x + width) {
+            let hit = false;
+        }
+        if (by < y) {
+            let hit = false;
+        }
+        if (by > y + height) {
+            let hit = false;
+        }
+
+        return hit;
     }
 }
