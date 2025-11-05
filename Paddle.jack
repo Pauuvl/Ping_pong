@@ -1,0 +1,54 @@
+class Paddle {
+    field int x, y;
+    field int height, width;
+    field int speed;
+
+    constructor Paddle new(int startX, int startY) {
+        let x = startX;
+        let y = startY;
+        let width = 4;
+        let height = 25;
+        let speed = 4;
+        return this;
+    }
+
+    method void update(int upKey, int downKey) {
+        if (Keyboard.keyPressed(upKey)) {
+            do moveUp();
+        }
+        if (Keyboard.keyPressed(downKey)) {
+            do moveDown();
+        }
+        return;
+    }
+
+    method void moveUp() {
+        if (y > 0) {
+            let y = y - speed;
+        }
+        return;
+    }
+
+    method void moveDown() {
+        if (y + height < 230) {
+            let y = y + speed;
+        }
+        return;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.fillRectangle(x, y, x + width, y + height);
+        return;
+    }
+
+    method boolean collidesWith(Ball b) {
+        var int bx, by;
+        let bx = b.xPos();
+        let by = b.yPos();
+        if ((bx >= x & bx <= x + width) & (by >= y & by <= y + height)) {
+            return true;
+        }
+        return false;
+    }
+}

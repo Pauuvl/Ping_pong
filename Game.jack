@@ -1,0 +1,46 @@
+class Game {
+    field Ball ball;
+    field Paddle leftPaddle, rightPaddle;
+    field int scoreLeft, scoreRight;
+
+    constructor Game new() {
+        let ball = Ball.new(250, 200);
+        let leftPaddle = Paddle.new(20, 150);
+        let rightPaddle = Paddle.new(450, 150);
+        let scoreLeft = 0;
+        let scoreRight = 0;
+        return this;
+    }
+
+    method void run() {
+        while (true) {
+            do Screen.clearScreen();
+            do leftPaddle.update(130, 131);   // teclas arriba/abajo izquierda
+            do rightPaddle.update(138, 139);  // teclas arriba/abajo derecha
+            do ball.move();
+            do checkCollision();
+            do leftPaddle.draw();
+            do rightPaddle.draw();
+            do ball.draw();
+            do Sys.wait(20);
+        }
+        return;
+    }
+
+    method void checkCollision() {
+        // rebote con bordes
+        if (ball.yPos() <= 0 | ball.yPos() >= 230) {
+            do ball.bounceVertical();
+        }
+
+        // colisión con paletas
+        if (leftPaddle.collidesWith(ball)) {
+            do ball.bounceHorizontal();
+        }
+        if (rightPaddle.collidesWith(ball)) {
+            do ball.bounceHorizontal();
+        }
+
+        return;
+    }
+}

@@ -1,0 +1,39 @@
+class Ball {
+    field int x, y;      // posición
+    field int dx, dy;    // dirección
+    field int size;
+
+    constructor Ball new(int startX, int startY) {
+        let x = startX;
+        let y = startY;
+        let dx = 3;
+        let dy = 2;
+        let size = 4;
+        return this;
+    }
+
+    method void move() {
+        let x = x + dx;
+        let y = y + dy;
+        return;
+    }
+
+    method void bounceVertical() {
+        let dy = -dy;
+        return;
+    }
+
+    method void bounceHorizontal() {
+        let dx = -dx;
+        return;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.fillRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    method int xPos() { return x; }
+    method int yPos() { return y; }
+}
