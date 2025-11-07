@@ -16,8 +16,18 @@ class Game {
         var boolean leftHit;
         var boolean rightHit;
         var int by;
+        var int key;
+
 
         while (true) {
+            //81 
+            let key= Keyboard.keyPressed();
+            if ((key=81)){
+                do Screen.clearScreen();
+                do Screen.drawString(100, 120, "GAME OVER");
+                do Sys.wait();
+                return;
+            }
             do Screen.clearScreen();
             do leftPaddle.update(130, 131);
             do rightPaddle.update(138, 139);
@@ -52,3 +62,4 @@ class Game {
         return;
     }
 }
+// mejorar field

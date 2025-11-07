@@ -36,7 +36,8 @@ class Ball {
 
     method void draw() {
         do Screen.setColor(true);
-        do Screen.fillRectangle(x, y, x + 4, y + 4);
-        return;
+        do Screen.drawCircle(x, y, 4);
+        return ;
     }
 }
+//do Screen.drawCircle(100, 100, 50);
