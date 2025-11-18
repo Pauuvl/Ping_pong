@@ -1,146 +1,260 @@
 function Paddle.new 0
-push constant 5
-call Memory.alloc 1
-pop pointer 0
-push argument 0
-pop this 0
-push argument 1
-pop this 1
-push constant 4
-pop this 2
-push constant 25
-pop this 3
-push constant 4
-pop this 4
-push pointer 0
-return
-function Paddle.update 0
-push argument 0
-pop pointer 0
-push argument 1
-call Keyboard.keyPressed 1
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push pointer 0
-call Paddle.moveUp 1
-pop temp 0
-label IF_FALSE0
-push argument 2
-call Keyboard.keyPressed 1
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push pointer 0
-call Paddle.moveDown 1
-pop temp 0
-label IF_FALSE1
-push constant 0
-return
+    push constant 5
+    call Memory.alloc 1
+    pop pointer 0
+    push argument 0
+    pop this 0
+    push argument 1
+    pop this 1
+    push constant 8
+    pop this 2
+    push constant 40
+    pop this 3
+    push constant 7
+    pop this 4
+    push pointer 0
+    call Paddle.draw 1
+    pop temp 0
+    push pointer 0
+    return
+function Paddle.dispose 0
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    call Paddle.erase 1
+    pop temp 0
+    push pointer 0
+    call Memory.deAlloc 1
+    pop temp 0
+    push constant 0
+    return
 function Paddle.moveUp 0
-push argument 0
-pop pointer 0
-push this 1
-push constant 0
-gt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push this 1
-push this 4
-sub
-pop this 1
-label IF_FALSE0
-push constant 0
-return
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    call Paddle.erase 1
+    pop temp 0
+    push this 1
+    push this 4
+    sub
+    pop this 1
+    push this 1
+    push constant 21
+    lt
+    not
+    if-goto Paddle_1
+    push constant 21
+    pop this 1
+    goto Paddle_0
+label Paddle_1
+label Paddle_0
+    push pointer 0
+    call Paddle.draw 1
+    pop temp 0
+    push constant 0
+    return
 function Paddle.moveDown 0
-push argument 0
-pop pointer 0
-push this 1
-push this 3
-add
-push constant 230
-lt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push this 1
-push this 4
-add
-pop this 1
-label IF_FALSE0
-push constant 0
-return
+    push argument 0
+    pop pointer 0
+    push pointer 0
+    call Paddle.erase 1
+    pop temp 0
+    push this 1
+    push this 4
+    add
+    pop this 1
+    push this 1
+    push this 3
+    add
+    push constant 234
+    gt
+    not
+    if-goto Paddle_3
+    push constant 234
+    push this 3
+    sub
+    pop this 1
+    goto Paddle_2
+label Paddle_3
+label Paddle_2
+    push pointer 0
+    call Paddle.draw 1
+    pop temp 0
+    push constant 0
+    return
 function Paddle.draw 0
-push argument 0
-pop pointer 0
-push constant 0
-not
-call Screen.setColor 1
-pop temp 0
-push this 0
-push this 1
-push this 0
-push this 2
-add
-push this 1
-push this 3
-add
-call Screen.fillRectangle 4
-pop temp 0
-push constant 0
-return
+    push argument 0
+    pop pointer 0
+    push this 0
+    push constant 0
+    gt
+    push this 0
+    push constant 511
+    lt
+    and
+    push this 1
+    push constant 0
+    gt
+    and
+    push this 1
+    push this 3
+    add
+    push constant 255
+    lt
+    and
+    not
+    if-goto Paddle_5
+    push constant 1
+    neg
+    call Screen.setColor 1
+    pop temp 0
+    push this 0
+    push this 1
+    push this 0
+    push this 2
+    add
+    push this 1
+    push this 3
+    add
+    call Screen.drawRectangle 4
+    pop temp 0
+    goto Paddle_4
+label Paddle_5
+label Paddle_4
+    push constant 0
+    return
+function Paddle.erase 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    push constant 0
+    gt
+    push this 0
+    push constant 511
+    lt
+    and
+    push this 1
+    push constant 0
+    gt
+    and
+    push this 1
+    push this 3
+    add
+    push constant 255
+    lt
+    and
+    not
+    if-goto Paddle_7
+    push constant 0
+    call Screen.setColor 1
+    pop temp 0
+    push this 0
+    push this 1
+    push this 0
+    push this 2
+    add
+    push this 1
+    push this 3
+    add
+    call Screen.drawRectangle 4
+    pop temp 0
+    goto Paddle_6
+label Paddle_7
+label Paddle_6
+    push constant 0
+    return
+function Paddle.getX 0
+    push argument 0
+    pop pointer 0
+    push this 0
+    return
+function Paddle.getY 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    return
+function Paddle.getWidth 0
+    push argument 0
+    pop pointer 0
+    push this 2
+    return
+function Paddle.getHeight 0
+    push argument 0
+    pop pointer 0
+    push this 3
+    return
+function Paddle.top 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    return
+function Paddle.bottom 0
+    push argument 0
+    pop pointer 0
+    push this 1
+    push this 3
+    add
+    return
 function Paddle.collidesWith 3
-push argument 0
-pop pointer 0
-push argument 1
-call Ball.xPos 1
-pop local 0
-push argument 1
-call Ball.yPos 1
-pop local 1
-push constant 0
-not
-pop local 2
-push local 0
-push this 0
-lt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push constant 0
-pop local 2
-label IF_FALSE0
-push local 0
-push this 0
-gt
-push this 2
-add
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
-push constant 0
-pop local 2
-label IF_FALSE1
-push local 1
-push this 1
-lt
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push constant 0
-pop local 2
-label IF_FALSE2
-push local 1
-push this 1
-gt
-push this 3
-add
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
-push constant 0
-pop local 2
-label IF_FALSE3
-push local 2
-return
+    push argument 0
+    pop pointer 0
+    push argument 1
+    call Ball.getX 1
+    pop local 0
+    push argument 1
+    call Ball.getY 1
+    pop local 1
+    push argument 1
+    call Ball.getSize 1
+    pop local 2
+    push local 0
+    push local 2
+    add
+    push this 0
+    lt
+    not
+    if-goto Paddle_9
+    push constant 0
+    return
+    goto Paddle_8
+label Paddle_9
+label Paddle_8
+    push local 0
+    push this 0
+    push this 2
+    add
+    gt
+    not
+    if-goto Paddle_11
+    push constant 0
+    return
+    goto Paddle_10
+label Paddle_11
+label Paddle_10
+    push local 1
+    push local 2
+    add
+    push this 1
+    lt
+    not
+    if-goto Paddle_13
+    push constant 0
+    return
+    goto Paddle_12
+label Paddle_13
+label Paddle_12
+    push local 1
+    push this 1
+    push this 3
+    add
+    gt
+    not
+    if-goto Paddle_15
+    push constant 0
+    return
+    goto Paddle_14
+label Paddle_15
+label Paddle_14
+    push constant 1
+    neg
+    return

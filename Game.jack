@@ -1,65 +1,124 @@
 class Game {
-    field Ball ball;
-    field Paddle leftPaddle, rightPaddle;
-    field int scoreLeft, scoreRight;
+    field Paddle paddleL, paddleR;  // paletas izquierda y derecha
+    field Ball ball;                // bola
+    field int scoreL, scoreR;       // puntajes
+    field boolean running;          // control del bucle principal
 
+    /** Constructor: inicializa todo el juego */
     constructor Game new() {
-        let ball = Ball.new(250, 200);
-        let leftPaddle = Paddle.new(20, 150);
-        let rightPaddle = Paddle.new(450, 150);
-        let scoreLeft = 0;
-        let scoreRight = 0;
+        do Screen.clearScreen();
+
+        let paddleL = Paddle.new(20, 100);
+        let paddleR = Paddle.new(484, 100);
+        let ball = Ball.new();
+        let scoreL = 0;
+        let scoreR = 0;
+        let running = true;
+
+        do drawUI();
         return this;
     }
 
+    /** Dibuja la interfaz inicial del juego */
+    method void drawUI() {
+        do Output.moveCursor(0, 5);
+        do Output.printString("P1: ");
+        do Output.printInt(scoreL);
+
+        do Output.moveCursor(0, 55);
+        do Output.printString("P2: ");
+        do Output.printInt(scoreR);
+
+        do Output.moveCursor(22, 15);
+        do Output.printString("W/S = P1   UP/DOWN = P2");
+        return;
+    }
+
+    /** Bucle principal del juego */
     method void run() {
-        var boolean leftHit;
-        var boolean rightHit;
-        var int by;
-        var int key;
+        var char key;
 
+        while (running) {
+            let key = Keyboard.keyPressed();
 
-        while (true) {
-            //81 
-            let key= Keyboard.keyPressed();
-            if ((key=81)){
-                do Screen.clearScreen();
-                do Screen.drawString(100, 120, "GAME OVER");
-                do Sys.wait();
-                return;
-            }
-            do Screen.clearScreen();
-            do leftPaddle.update(130, 131);
-            do rightPaddle.update(138, 139);
-            do ball.move();
-
-            // --- check collision ---
-            let by = ball.yPos();
-            if (by = 0) {
-                do ball.bounceVertical();
-            }
-            if (by = 230) {
-                do ball.bounceVertical();
+            // salir con 'q'
+            if (key = 113) { 
+                let running = false;
             }
 
-            let leftHit = leftPaddle.collidesWith(ball);
-            if (leftHit) {
-                do ball.bounceHorizontal();
+            // control paleta izquierda
+            if (key = 119) { do paddleL.moveUp(); }     // W
+            if (key = 115) { do paddleL.moveDown(); }   // S
+
+            // control paleta derecha
+            if (key = 131) { do paddleR.moveUp(); }     // ↑
+            if (key = 133) { do paddleR.moveDown(); }   // ↓
+
+            // actualizar bola y paletas
+            do ball.update(paddleL, paddleR);
+            do paddleL.draw();
+            do paddleR.draw();
+
+           if (ball.isGoalLeft()) {
+            let scoreR = scoreR + 1;
+            do countdown();     // 👈 Aquí
+            do ball.reset();
+            do drawUI();
+            }
+            if (ball.isGoalRight()) {
+            let scoreL = scoreL + 1;
+            do countdown();     // 👈 Y aquí también
+            do ball.reset();
+            do drawUI();
             }
 
-            let rightHit = rightPaddle.collidesWith(ball);
-            if (rightHit) {
-                do ball.bounceHorizontal();
+            // comprobar ganador (primero a 10)
+            if ((scoreL > 9) | (scoreR > 9)) {
+                let running = false;
+                do showWinner();
             }
 
-            // --- draw ---
-            do leftPaddle.draw();
-            do rightPaddle.draw();
-            do ball.draw();
-
-            do Sys.wait(20);
+            do Sys.wait(30);
         }
         return;
     }
+method void countdown() {
+    var int i;
+    let i = 3;
+    while (i > 0) {
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 25);
+        do Output.printInt(i);
+        do Sys.wait(60);    // espera un poco (aprox 1 segundo)
+        let i = i - 1;
+    }
+    do Screen.clearScreen();
+    return;
 }
-// mejorar field
+
+    /** Muestra el mensaje final del ganador */
+    method void showWinner() {
+        var char key;
+
+        do Output.moveCursor(11, 22);
+        if (scoreL > 9) {
+            do Output.printString("=== P1 WINS ===");
+        } else {
+            do Output.printString("=== P2 WINS ===");
+        }
+
+        do Output.moveCursor(13, 18);
+        do Output.printString("Press any key to exit");
+        let key = Keyboard.readChar();
+        return;
+    }
+
+    /** Libera memoria y borra elementos del juego */
+    method void dispose() {
+        do paddleL.dispose();
+        do paddleR.dispose();
+        do ball.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}

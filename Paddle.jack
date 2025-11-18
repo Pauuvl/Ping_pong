@@ -1,69 +1,80 @@
 class Paddle {
-    field int x, y;
-    field int width, height;
-    field int speed;
+    field int x, y, width, height, speed;
 
-    constructor Paddle new(int startX, int startY) {
-        let x = startX;
-        let y = startY;
-        let width = 4;
-        let height = 25;
-        let speed = 4;
+    /** Constructor: inicializa la posición y dibuja el paddle */
+    constructor Paddle new(int sx, int sy) {
+        let x = sx;
+        let y = sy;
+        let width = 8;
+        let height = 40;
+        let speed = 7;
+        do draw();
         return this;
     }
 
-    method void update(int upKey, int downKey) {
-        if (Keyboard.keyPressed(upKey)) {
-            do moveUp();
-        }
-        if (Keyboard.keyPressed(downKey)) {
-            do moveDown();
-        }
+    /** Libera la memoria del paddle */
+    method void dispose() {
+        do erase();
+        do Memory.deAlloc(this);
         return;
     }
 
+    /** Mueve el paddle hacia arriba */
     method void moveUp() {
-        if (y > 0) {
-            let y = y - speed;
-        }
+        do erase();
+        let y = y - speed;
+        if (y < 21) { let y = 21; }       // límite superior
+        do draw();
         return;
     }
 
+    /** Mueve el paddle hacia abajo */
     method void moveDown() {
-        if (y + height < 230) {
-            let y = y + speed;
-        }
+        do erase();
+        let y = y + speed;
+        if ((y + height) > 234) { let y = 234 - height; }  // límite inferior
+        do draw();
         return;
     }
 
+    /** Dibuja el paddle en pantalla */
     method void draw() {
-        do Screen.setColor(true);
-        do Screen.fillRectangle(x, y, x + width, y + height);
+        if ((x > 0) & (x < 511) & (y > 0) & ((y + height) < 255)) {
+            do Screen.setColor(true);
+            do Screen.drawRectangle(x, y, x + width, y + height);
+        }
         return;
     }
 
-    method boolean collidesWith(Ball b) {
-        var int bx;
-        var int by;
-        var boolean hit;
+    /** Borra el paddle de la pantalla */
+    method void erase() {
+        if ((x > 0) & (x < 511) & (y > 0) & ((y + height) < 255)) {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x + width, y + height);
+        }
+        return;
+    }
 
-        let bx = b.xPos();
-        let by = b.yPos();
-        let hit = true;
+    /** Retorna coordenadas o dimensiones */
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method int getWidth() { return width; }
+    method int getHeight() { return height; }
+    method int top() { return y; }
+    method int bottom() { return y + height; }
 
-        if (bx < x) {
-            let hit = false;
-        }
-        if (bx > x + width) {
-            let hit = false;
-        }
-        if (by < y) {
-            let hit = false;
-        }
-        if (by > y + height) {
-            let hit = false;
-        }
+    /** Verifica colisión con la pelota */
+    method boolean collidesWith(Ball ball) {
+        var int bx, by, bsize;
+        let bx = ball.getX();
+        let by = ball.getY();
+        let bsize = ball.getSize();
 
-        return hit;
+        if ((bx + bsize) < x) { return false; }
+        if (bx > (x + width)) { return false; }
+        if ((by + bsize) < y) { return false; }
+        if (by > (y + height)) { return false; }
+
+        return true;
     }
 }
